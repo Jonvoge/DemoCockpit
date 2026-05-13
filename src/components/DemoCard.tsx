@@ -1,4 +1,4 @@
-import { Pin, Copy, MessageSquare, Info, Lock, ArrowUpRight } from 'lucide-react'
+import { Pin, Copy, MessageSquare, Info, Lock, ArrowUpRight, Pencil } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import type { Demo, AuthUser } from '../types'
 import { isNewDemo } from '../utils/demoUtils'
@@ -7,6 +7,7 @@ interface Props {
   demo: Demo
   isPinned: boolean
   currentUser: AuthUser
+  onEdit: (demo: Demo) => void
   onPin: (id: string) => void
   onCopy: (url: string) => void
   onInfo: (demo: Demo) => void
@@ -21,11 +22,12 @@ function getLucideIcon(iconSlug: string): React.ComponentType<{ size?: number; s
   return (LucideIcons as unknown as Record<string, React.ComponentType<{ size?: number; strokeWidth?: number }>>)[pascalCase] ?? LucideIcons.Zap
 }
 
-export function DemoCard({ demo, isPinned, currentUser: _currentUser, onPin, onCopy, onInfo, onClick }: Props) {
+export function DemoCard({ demo, isPinned, currentUser, onEdit, onPin, onCopy, onInfo, onClick }: Props) {
   const IconComponent = getLucideIcon(demo.icon)
   const teamsUrl = `https://teams.microsoft.com/l/chat/0/0?users=${encodeURIComponent(demo.owner.email)}`
   const isNew = isNewDemo(demo.createdAt)
-  const ownerLabel = demo.owner.id === _currentUser.userId ? 'Added by you' : `Added by ${demo.owner.name}`
+  const ownerLabel = demo.owner.id === currentUser.userId ? 'Added by you' : `Added by ${demo.owner.name}`
+  const canEdit = demo.owner.id === currentUser.userId || currentUser.userRoles.includes('admin')
 
   return (
     <div
@@ -57,14 +59,14 @@ export function DemoCard({ demo, isPinned, currentUser: _currentUser, onPin, onC
             <p className="min-h-[2.7rem] text-[0.83rem] leading-snug text-[#4f5c5f]">{demo.description || 'No description yet.'}</p>
             <div className="flex items-center justify-between gap-3 pt-1 text-[0.72rem] text-[#6a7678]">
               <span className="truncate">{ownerLabel}</span>
-              <span className="rounded-full bg-[#f3f7f7] px-2 py-1 font-medium text-[#456266]">{demo.clickCount} clicks</span>
+              {canEdit && <span className="font-medium text-[#007f92]">Editable</span>}
             </div>
           </div>
         </div>
       </div>
 
       <div className="mt-auto flex items-center justify-between border-t border-[#edf1f1] bg-[#fbfdfd] px-5 py-3" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1">
           <button
             onClick={() => onPin(demo.id)}
             title={isPinned ? 'Unpin' : 'Pin'}
@@ -95,6 +97,15 @@ export function DemoCard({ demo, isPinned, currentUser: _currentUser, onPin, onC
           >
             <Info size={15} />
           </button>
+          {canEdit && (
+            <button
+              onClick={() => onEdit(demo)}
+              title="Edit demo"
+              className="rounded-lg p-2 text-[#53686c] transition-colors hover:bg-[#edf4f5]"
+            >
+              <Pencil size={15} />
+            </button>
+          )}
         </div>
 
         <button

@@ -148,6 +148,7 @@ export default function App() {
           pinnedDemos={pinnedDemos}
           otherDemos={otherDemos}
           currentUser={user}
+          onEdit={setEditDemo}
           onPin={handlePin}
           onCopy={handleCopy}
           onInfo={setDrawerDemo}
