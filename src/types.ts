@@ -15,6 +15,7 @@ export interface Demo {
   owner: DemoOwner;
   clickCount: number;
   notes: string;
+  unavailable: boolean;
   createdAt: string;
   updatedAt: string;
 }

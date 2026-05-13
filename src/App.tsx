@@ -17,6 +17,7 @@ export default function App() {
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState('All')
   const [showPrivate, setShowPrivate] = useState(false)
+  const [showUnavailable, setShowUnavailable] = useState(false)
   const [drawerDemo, setDrawerDemo] = useState<Demo | null>(null)
   const [showAdd, setShowAdd] = useState(false)
   const [editDemo, setEditDemo] = useState<Demo | null>(null)
@@ -37,6 +38,7 @@ export default function App() {
   const filtered = useMemo(() => {
     if (!prefs) return []
     let result = demos
+    if (!showUnavailable) result = result.filter(d => !d.unavailable)
     if (showPrivate) result = result.filter(d => d.owner.id === user?.userId)
     if (activeCategory !== 'All') result = result.filter(d => d.category === activeCategory)
     if (search.trim()) {
@@ -46,7 +48,7 @@ export default function App() {
       )
     }
     return sortDemos(result, prefs.sortField, prefs.sortDirection, prefs.lastClicked)
-  }, [demos, prefs, search, activeCategory, showPrivate, user])
+  }, [demos, prefs, search, activeCategory, showPrivate, showUnavailable, user])
 
   const pinnedDemos = useMemo(
     () => filtered.filter(d => prefs?.pinnedDemoIds.includes(d.id)),
@@ -138,6 +140,8 @@ export default function App() {
           onCategory={setActiveCategory}
           showPrivate={showPrivate}
           onPrivate={() => setShowPrivate(v => !v)}
+          showUnavailable={showUnavailable}
+          onUnavailable={() => setShowUnavailable(v => !v)}
           sortField={prefs.sortField}
           sortDirection={prefs.sortDirection}
           onSortField={handleSortField}
@@ -170,11 +174,12 @@ export default function App() {
         onCopy={handleCopy}
       />
 
-      {showAdd && <DemoModal mode="add" onSubmit={handleAddDemo} onClose={() => setShowAdd(false)} />}
+      {showAdd && <DemoModal mode="add" currentUser={user} onSubmit={handleAddDemo} onClose={() => setShowAdd(false)} />}
       {editDemo && (
         <DemoModal
           mode="edit"
           demo={editDemo}
+          currentUser={user}
           onSubmit={handleEditDemo}
           onDelete={handleDeleteDemo}
           onClose={() => setEditDemo(null)}

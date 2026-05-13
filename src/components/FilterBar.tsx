@@ -7,6 +7,8 @@ interface Props {
   onCategory: (cat: string) => void
   showPrivate: boolean
   onPrivate: () => void
+  showUnavailable: boolean
+  onUnavailable: () => void
   sortField: SortField
   sortDirection: SortDirection
   onSortField: (f: SortField) => void
@@ -16,6 +18,7 @@ interface Props {
 export function FilterBar({
   categories, activeCategory, onCategory,
   showPrivate, onPrivate,
+  showUnavailable, onUnavailable,
   sortField, sortDirection, onSortField, onSortDirection
 }: Props) {
   return (
@@ -43,6 +46,16 @@ export function FilterBar({
           }`}
         >
           Private
+        </button>
+        <button
+          onClick={onUnavailable}
+          className={`px-3 py-1 rounded-full text-[0.78rem] font-medium border border-dashed transition-colors ${
+            showUnavailable
+              ? 'bg-[#e5900a] text-white border-[#e5900a]'
+              : 'bg-white text-[#454545] border-[#d5d5d0] hover:border-[#e5900a]'
+          }`}
+        >
+          Unavailable
         </button>
       </div>
       <div className="flex items-center gap-1.5">

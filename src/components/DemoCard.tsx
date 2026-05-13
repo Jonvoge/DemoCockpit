@@ -23,7 +23,7 @@ export function DemoCard({ demo, isPinned, currentUser, onEdit, onPin, onCopy, o
 
   return (
     <div
-      className={`group relative flex h-full min-h-[228px] cursor-pointer flex-col overflow-hidden rounded-2xl border bg-white transition-all hover:-translate-y-0.5 hover:border-[#00A4BD] hover:shadow-[0_16px_30px_rgba(0,60,67,0.08)] ${isPinned ? 'border-[#00A4BD] shadow-[inset_0_0_0_1px_rgba(0,164,189,0.16)]' : 'border-[#dce3e4]'}`}
+      className={`group relative flex h-full min-h-[228px] cursor-pointer flex-col overflow-hidden rounded-2xl border bg-white transition-all hover:-translate-y-0.5 hover:border-[#00A4BD] hover:shadow-[0_16px_30px_rgba(0,60,67,0.08)] ${isPinned ? 'border-[#00A4BD] shadow-[inset_0_0_0_1px_rgba(0,164,189,0.16)]' : 'border-[#dce3e4]'} ${demo.unavailable ? 'opacity-60' : ''}`}
       onClick={() => onClick(demo)}
     >
       <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#00A4BD] via-[#5cc6d5] to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
@@ -36,6 +36,9 @@ export function DemoCard({ demo, isPinned, currentUser, onEdit, onPin, onCopy, o
           <div className="mb-3 flex flex-wrap items-center gap-2">
             {isNew && (
               <span className="rounded-full bg-[#00A4BD] px-2 py-1 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-white">New</span>
+            )}
+            {demo.unavailable && (
+              <span className="rounded-full bg-[#e5900a] px-2 py-1 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-white">Unavailable</span>
             )}
             <span className="inline-flex items-center rounded-full border border-[#c7e9ee] bg-[#eef9fb] px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-[#005862]">
               {demo.category}

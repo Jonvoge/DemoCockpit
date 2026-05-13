@@ -1,16 +1,16 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
 import { IconPicker } from './IconPicker'
-import type { Demo } from '../types'
+import type { Demo, AuthUser } from '../types'
 
 type DemoFormData = Omit<Demo, 'id' | 'owner' | 'clickCount' | 'createdAt' | 'updatedAt'>
 
 type Props =
-  | { mode: 'add'; onSubmit: (data: DemoFormData) => Promise<void>; onClose: () => void }
-  | { mode: 'edit'; demo: Demo; onSubmit: (updates: Partial<Demo>) => Promise<void>; onDelete: () => Promise<void>; onClose: () => void }
+  | { mode: 'add'; currentUser: AuthUser; onSubmit: (data: DemoFormData) => Promise<void>; onClose: () => void }
+  | { mode: 'edit'; demo: Demo; currentUser: AuthUser; onSubmit: (updates: Partial<Demo>) => Promise<void>; onDelete: () => Promise<void>; onClose: () => void }
 
 const EMPTY: DemoFormData = {
-  title: '', description: '', url: '', category: '', icon: 'zap', visibility: 'public', notes: ''
+  title: '', description: '', url: '', category: '', icon: 'zap', visibility: 'public', notes: '', unavailable: false
 }
 
 const inputCls = 'px-3 py-2 rounded-lg border border-[#d5d5d0] text-[0.85rem] focus:outline-none focus:ring-1 focus:ring-[#00A4BD] w-full'
@@ -29,15 +29,20 @@ export function DemoModal(props: Props) {
 
   const [form, setForm] = useState<DemoFormData>(
     isEdit
-      ? { title: props.demo.title, description: props.demo.description, url: props.demo.url, category: props.demo.category, icon: props.demo.icon, visibility: props.demo.visibility, notes: props.demo.notes }
+      ? { title: props.demo.title, description: props.demo.description, url: props.demo.url, category: props.demo.category, icon: props.demo.icon, visibility: props.demo.visibility, notes: props.demo.notes, unavailable: props.demo.unavailable ?? false }
       : EMPTY
   )
   const [saving, setSaving] = useState(false)
   const [confirming, setConfirming] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const set = (field: keyof DemoFormData, value: string) =>
+  const set = (field: keyof DemoFormData, value: string | boolean) =>
     setForm(f => ({ ...f, [field]: value }))
+
+  const canSetUnavailable = isEdit && (
+    props.demo.owner.id === props.currentUser.userId ||
+    props.currentUser.userRoles.includes('admin')
+  )
 
   const valid = form.title.trim() && form.url.trim() && form.category.trim()
 
@@ -101,6 +106,19 @@ export function DemoModal(props: Props) {
               onChange={e => set('notes', e.target.value)}
             />
           </Field>
+          {canSetUnavailable && (
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={form.unavailable}
+                onChange={e => set('unavailable', e.target.checked)}
+                className="w-4 h-4 accent-[#e5900a]"
+              />
+              <span className="text-[0.85rem] text-[#454545]">
+                Mark as temporarily unavailable
+              </span>
+            </label>
+          )}
           {error && (
             <div className="text-[0.78rem] text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>
           )}
