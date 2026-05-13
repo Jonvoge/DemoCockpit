@@ -21,14 +21,16 @@ export default function App() {
   const [drawerDemo, setDrawerDemo] = useState<Demo | null>(null)
   const [showAdd, setShowAdd] = useState(false)
   const [editDemo, setEditDemo] = useState<Demo | null>(null)
-
+  const [apiError, setApiError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!user) return
-    Promise.all([api.demos.list(), api.preferences.get()]).then(([d, p]) => {
-      setDemos(d)
-      setPrefs(p)
-    })
+    Promise.all([api.demos.list(), api.preferences.get()])
+      .then(([d, p]) => {
+        setDemos(d)
+        setPrefs(p)
+      })
+      .catch(err => setApiError(String(err)))
   }, [user])
 
   const categories = useMemo(() => [...new Set(demos.map(d => d.category))].sort(), [demos])
@@ -116,6 +118,12 @@ export default function App() {
   )
   if (!user) return (
     <div className="h-screen flex items-center justify-center text-[#a0a09a]">Redirecting to login…</div>
+  )
+  if (apiError) return (
+    <div className="h-screen flex items-center justify-center flex-col gap-3">
+      <div className="text-red-500 font-semibold">API error</div>
+      <div className="text-[0.8rem] text-[#454545] max-w-md text-center">{apiError}</div>
+    </div>
   )
   if (!prefs) return (
     <div className="h-screen flex items-center justify-center text-[#a0a09a]">Loading…</div>
