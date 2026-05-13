@@ -18,10 +18,10 @@ function getLucideIcon(iconSlug: string): React.ComponentType<{ size?: number; s
     .split('-')
     .map(s => s.charAt(0).toUpperCase() + s.slice(1))
     .join('')
-  return (LucideIcons as Record<string, React.ComponentType<{ size?: number; strokeWidth?: number }>>)[pascalCase] ?? LucideIcons.Zap
+  return (LucideIcons as unknown as Record<string, React.ComponentType<{ size?: number; strokeWidth?: number }>>)[pascalCase] ?? LucideIcons.Zap
 }
 
-export function DemoCard({ demo, isPinned, currentUser, onPin, onCopy, onInfo, onClick }: Props) {
+export function DemoCard({ demo, isPinned, currentUser: _currentUser, onPin, onCopy, onInfo, onClick }: Props) {
   const IconComponent = getLucideIcon(demo.icon)
   const teamsUrl = `https://teams.microsoft.com/l/chat/0/0?users=${encodeURIComponent(demo.owner.email)}`
   const isNew = isNewDemo(demo.createdAt)
