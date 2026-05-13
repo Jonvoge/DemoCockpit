@@ -1,4 +1,4 @@
-import { Pin, Copy, MessageSquare, Info, Lock } from 'lucide-react'
+import { Pin, Copy, MessageSquare, Info, Lock, ArrowUpRight } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import type { Demo, AuthUser } from '../types'
 import { isNewDemo } from '../utils/demoUtils'
@@ -25,71 +25,85 @@ export function DemoCard({ demo, isPinned, currentUser: _currentUser, onPin, onC
   const IconComponent = getLucideIcon(demo.icon)
   const teamsUrl = `https://teams.microsoft.com/l/chat/0/0?users=${encodeURIComponent(demo.owner.email)}`
   const isNew = isNewDemo(demo.createdAt)
+  const ownerLabel = demo.owner.id === _currentUser.userId ? 'Added by you' : `Added by ${demo.owner.name}`
 
   return (
     <div
-      className={`group relative bg-white border rounded-xl p-5 cursor-pointer transition-all hover:border-[#00A4BD] hover:shadow-md hover:-translate-y-0.5 ${isPinned ? 'border-l-4 border-l-[#00A4BD] border-[#e0e0db]' : 'border-[#e0e0db]'}`}
+      className={`group relative flex h-full min-h-[228px] cursor-pointer flex-col overflow-hidden rounded-2xl border bg-white transition-all hover:-translate-y-0.5 hover:border-[#00A4BD] hover:shadow-[0_16px_30px_rgba(0,60,67,0.08)] ${isPinned ? 'border-[#00A4BD] shadow-[inset_0_0_0_1px_rgba(0,164,189,0.16)]' : 'border-[#dce3e4]'}`}
       onClick={() => onClick(demo)}
     >
-      <div className="flex gap-4 items-start">
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-[#CCEFF3] text-[#005862]">
-          <IconComponent size={22} strokeWidth={1.75} />
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#00A4BD] via-[#5cc6d5] to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+
+      <div className="flex items-start gap-4 px-5 pt-5">
+        <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-[#d8f1f5] text-[#005862] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
+          <IconComponent size={24} strokeWidth={1.8} />
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="font-semibold text-[0.95rem] text-[#003C43]">{demo.title}</span>
+        <div className="min-w-0 flex-1">
+          <div className="mb-3 flex flex-wrap items-center gap-2">
             {isNew && (
-              <span className="text-[0.6rem] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full bg-[#00A4BD] text-white">New</span>
+              <span className="rounded-full bg-[#00A4BD] px-2 py-1 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-white">New</span>
             )}
+            <span className="inline-flex items-center rounded-full border border-[#c7e9ee] bg-[#eef9fb] px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-[#005862]">
+              {demo.category}
+            </span>
             {demo.visibility === 'private' && (
-              <span className="flex items-center gap-1 text-[0.6rem] font-semibold px-1.5 py-0.5 rounded-full bg-[#ECECEC] text-[#454545] border border-[#d5d5d0]">
-                <Lock size={10} />Private
+              <span className="inline-flex items-center gap-1 rounded-full border border-[#d5d5d0] bg-[#f4f4f2] px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-[#454545]">
+                <Lock size={11} /> Private
               </span>
             )}
           </div>
-          <p className="text-[0.8rem] text-[#454545] leading-snug">{demo.description}</p>
-          <div className="flex items-center gap-2 mt-2">
-            <span className="inline-flex items-center text-[0.7rem] font-medium px-2 py-0.5 rounded-full bg-[#CCEFF3] text-[#005862]">
-              {demo.category}
-            </span>
-            <span className="text-[0.7rem] text-[#454545]">· {demo.owner.name}</span>
-            <div
-              className="ml-auto flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-              onClick={e => e.stopPropagation()}
-            >
-              <button
-                onClick={() => onPin(demo.id)}
-                title={isPinned ? 'Unpin' : 'Pin'}
-                className="p-1 rounded hover:bg-[#ECECEC]"
-              >
-                <Pin size={14} />
-              </button>
-              <button
-                onClick={() => onCopy(demo.url)}
-                title="Copy URL"
-                className="p-1 rounded hover:bg-[#ECECEC]"
-              >
-                <Copy size={14} />
-              </button>
-              <a
-                href={teamsUrl}
-                target="_blank"
-                rel="noreferrer"
-                title={`Chat with ${demo.owner.name}`}
-                className="p-1 rounded hover:bg-[#ECECEC] flex items-center"
-              >
-                <MessageSquare size={14} />
-              </a>
-              <button
-                onClick={() => onInfo(demo)}
-                title="Notes & Instructions"
-                className="p-1 rounded hover:bg-[#ECECEC]"
-              >
-                <Info size={14} />
-              </button>
+          <div className="space-y-2">
+            <h3 className="text-[1rem] font-semibold leading-tight text-[#003C43]">{demo.title}</h3>
+            <p className="min-h-[2.7rem] text-[0.83rem] leading-snug text-[#4f5c5f]">{demo.description || 'No description yet.'}</p>
+            <div className="flex items-center justify-between gap-3 pt-1 text-[0.72rem] text-[#6a7678]">
+              <span className="truncate">{ownerLabel}</span>
+              <span className="rounded-full bg-[#f3f7f7] px-2 py-1 font-medium text-[#456266]">{demo.clickCount} clicks</span>
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="mt-auto flex items-center justify-between border-t border-[#edf1f1] bg-[#fbfdfd] px-5 py-3" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => onPin(demo.id)}
+            title={isPinned ? 'Unpin' : 'Pin'}
+            className={`rounded-lg p-2 transition-colors ${isPinned ? 'bg-[#dff4f7] text-[#007f92]' : 'text-[#53686c] hover:bg-[#edf4f5]'}`}
+          >
+            <Pin size={15} />
+          </button>
+          <button
+            onClick={() => onCopy(demo.url)}
+            title="Copy URL"
+            className="rounded-lg p-2 text-[#53686c] transition-colors hover:bg-[#edf4f5]"
+          >
+            <Copy size={15} />
+          </button>
+          <a
+            href={teamsUrl}
+            target="_blank"
+            rel="noreferrer"
+            title={`Chat with ${demo.owner.name}`}
+            className="flex items-center rounded-lg p-2 text-[#53686c] transition-colors hover:bg-[#edf4f5]"
+          >
+            <MessageSquare size={15} />
+          </a>
+          <button
+            onClick={() => onInfo(demo)}
+            title="Notes & Instructions"
+            className="rounded-lg p-2 text-[#53686c] transition-colors hover:bg-[#edf4f5]"
+          >
+            <Info size={15} />
+          </button>
+        </div>
+
+        <button
+          onClick={() => onClick(demo)}
+          className="inline-flex items-center gap-1.5 rounded-lg bg-[#003C43] px-3 py-2 text-[0.78rem] font-semibold text-white transition-colors hover:bg-[#005862]"
+        >
+          Open
+          <ArrowUpRight size={14} />
+        </button>
       </div>
     </div>
   )
