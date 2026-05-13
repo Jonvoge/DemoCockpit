@@ -28,7 +28,7 @@ export function DemoCard({ demo, isPinned, currentUser, onEdit, onPin, onCopy, o
     >
       <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#00A4BD] via-[#5cc6d5] to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
 
-      <div className="flex items-start gap-4 px-5 pt-5">
+      <div className="flex items-start gap-4 px-5 pt-5 pb-4">
         <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-[#d8f1f5] text-[#005862] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
           <IconComponent size={24} strokeWidth={1.8} />
         </div>
