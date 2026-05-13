@@ -28,6 +28,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 export function AddDemoModal({ onSubmit, onClose }: Props) {
   const [form, setForm] = useState<DemoFormData>(EMPTY)
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const set = (field: keyof DemoFormData, value: string) =>
     setForm(f => ({ ...f, [field]: value }))
@@ -38,8 +39,11 @@ export function AddDemoModal({ onSubmit, onClose }: Props) {
     e.preventDefault()
     if (!valid) return
     setSaving(true)
+    setError(null)
     try {
       await onSubmit(form)
+    } catch (err) {
+      setError(String(err))
     } finally {
       setSaving(false)
     }
@@ -91,6 +95,9 @@ export function AddDemoModal({ onSubmit, onClose }: Props) {
             />
           </Field>
           <div className="flex gap-3 pt-2">
+            {error && (
+              <div className="w-full text-[0.78rem] text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-1">{error}</div>
+            )}
             <button
               type="submit"
               disabled={!valid || saving}
