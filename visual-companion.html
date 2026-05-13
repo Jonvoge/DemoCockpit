@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo Launchpad — Visual Companion</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root {
+    /* Inspari Brand Colors */
+    --inspari-teal: #00A4BD;
+    --inspari-cyan: #00AFC3;
+    --dark-navy: #003C43;
+    --slate-blue: #334B5B;
+    --warm-tan: #C4A68C;
+    --deep-brown: #786455;
+
+    /* Neutrals */
+    --white: #FFFFFF;
+    --light-gray: #ECECEC;
+    --dark-gray: #454545;
+    --black: #1A1A1A;
+
+    /* Tints/Shades */
+    --cyan-light-80: #CCEFF3;
+    --cyan-mid-60: #99DFE7;
+    --cyan-dark-25: #008392;
+    --cyan-dark-50: #005862;
+    --tan-warm-80: #F3EDE8;
+
+    /* UI Surface */
+    --bg: #f5f5f3;
+    --surface: #fafaf8;
+    --border-soft: #e0e0db;
+    --border-medium: #d5d5d0;
+    --muted-text: #a0a09a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--dark-navy);
+    padding: 2rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark-navy);
+  }
+
+  .subtitle {
+    color: var(--muted-text);
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+  }
+
+  .section {
+    margin-bottom: 3rem;
+  }
+
+  .section h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-navy);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--inspari-teal);
+    display: inline-block;
+  }
+
+  /* ─── Color Palette Display ─── */
+  .palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .swatch {
+    width: 100px;
+    text-align: center;
+  }
+
+  .swatch-color {
+    width: 100px;
+    height: 60px;
+    border-radius: 8px;
+    border: 1px solid var(--border-soft);
+    margin-bottom: 0.25rem;
+  }
+
+  .swatch-label {
+    font-size: 0.7rem;
+    color: var(--dark-gray);
+    font-weight: 600;
+  }
+
+  .swatch-hex {
+    font-size: 0.65rem;
+    color: var(--muted-text);
+    font-family: 'Cascadia Code', 'Consolas', monospace;
+  }
+
+  /* ─── Mockup Area ─── */
+  #mockup-area {
+    background: var(--white);
+    border: 1px solid var(--border-medium);
+    border-radius: 12px;
+    padding: 2rem;
+    min-height: 400px;
+  }
+
+  /* ─── Demo Card Mockup ─── */
+  .demo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+    padding: 1rem;
+  }
+
+  .demo-card {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .demo-card:hover {
+    border-color: var(--inspari-teal);
+    box-shadow: 0 4px 12px rgba(0, 164, 189, 0.12);
+    transform: translateY(-2px);
+  }
+
+  .demo-card .icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .demo-card .icon svg {
+    width: 22px;
+    height: 22px;
+    stroke-width: 1.75;
+  }
+
+  .demo-card .content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .demo-card .title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--dark-navy);
+    margin-bottom: 0.3rem;
+  }
+
+  .demo-card .description {
+    font-size: 0.8rem;
+    color: var(--dark-gray);
+    line-height: 1.4;
+  }
+
+  .demo-card .tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 100px;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  /* Tag color variants */
+  .tag-fabric { background: var(--cyan-light-80); color: var(--cyan-dark-50); }
+  .tag-website { background: var(--tan-warm-80); color: var(--deep-brown); }
+  .tag-powerbi { background: #FFF3CD; color: #856404; }
+
+  /* ─── Top Bar Mockup ─── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    background: var(--dark-navy);
+    border-radius: 10px 10px 0 0;
+    margin: -2rem -2rem 1.5rem -2rem;
+  }
+
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--white);
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .topbar-brand .dot {
+    width: 8px;
+    height: 8px;
+    background: var(--inspari-teal);
+    border-radius: 50%;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .topbar-search {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08);
+    color: var(--muted-text);
+    font-size: 0.8rem;
+    width: 200px;
+  }
+
+  .topbar-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--inspari-teal);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* ─── Category Filter ─── */
+  .filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    padding: 0 1rem;
+  }
+
+  .filter-btn {
+    padding: 0.35rem 0.85rem;
+    border-radius: 100px;
+    border: 1px solid var(--border-medium);
+    background: var(--white);
+    color: var(--dark-gray);
+    font-size: 0.78rem;
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  .filter-btn.active {
+    background: var(--inspari-teal);
+    color: var(--white);
+    border-color: var(--inspari-teal);
+  }
+
+  /* ─── Controls Row ─── */
+  .controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .sort-select {
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-medium);
+    background: var(--white);
+    color: var(--dark-gray);
+    font-size: 0.78rem;
+    font-family: inherit;
+  }
+
+  .sort-dir-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--border-medium);
+    background: var(--white);
+    color: var(--dark-gray);
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ─── Section Labels ─── */
+  .section-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .pinned-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .all-section {
+    margin-bottom: 1rem;
+  }
+
+  /* ─── Card Footer ─── */
+  .card-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .owner-name {
+    font-size: 0.7rem;
+    color: var(--dark-gray);
+    line-height: 1;
+  }
+
+  .tag + .owner-name::before {
+    content: '·';
+    margin-right: 0.35rem;
+    color: var(--muted-text);
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 0.25rem;
+    margin-left: auto;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .demo-card:hover .card-actions {
+    opacity: 1;
+  }
+
+  .action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 0.15rem 0.3rem;
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+
+  .action-btn:hover {
+    background: var(--light-gray);
+  }
+
+  /* ─── Title Row (for New badge) ─── */
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .filter-btn-mine {
+    border-style: dashed;
+  }
+
+  /* ─── Private Badge ─── */
+  .private-badge {
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 0.1rem 0.45rem;
+    border-radius: 100px;
+    background: var(--light-gray);
+    color: var(--dark-gray);
+    border: 1px solid var(--border-medium);
+    white-space: nowrap;
+  }
+  .new-badge {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.1rem 0.45rem;
+    border-radius: 100px;
+    background: var(--inspari-teal);
+    color: var(--white);
+  }
+
+  /* ─── Card Body ─── */
+  .card-body {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  /* ─── Pinned Card Accent ─── */
+  .demo-card.pinned {
+    border-left: 3px solid var(--inspari-teal);
+  }
+
+  /* ─── FAB (Add Demo) ─── */
+  .fab {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--inspari-teal);
+    color: var(--white);
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 164, 189, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .fab:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 16px rgba(0, 164, 189, 0.45);
+  }
+
+  /* ─── Drawer ─── */
+  .drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.25);
+    z-index: 100;
+  }
+
+  .drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 420px;
+    height: 100vh;
+    background: var(--white);
+    box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+    z-index: 101;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .drawer-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .drawer-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke-width: 1.75;
+  }
+
+  .drawer-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark-navy);
+    margin-bottom: 0.25rem;
+  }
+
+  .drawer-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: var(--muted-text);
+    cursor: pointer;
+    padding: 0.25rem 0.4rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .drawer-close:hover { background: var(--light-gray); }
+
+  .drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .drawer-section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted-text);
+    margin-bottom: 0.5rem;
+  }
+
+  .drawer-description {
+    font-size: 0.88rem;
+    color: var(--dark-gray);
+    line-height: 1.55;
+  }
+
+  .drawer-notes {
+    font-size: 0.85rem;
+    color: var(--dark-gray);
+    line-height: 1.6;
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid var(--border-soft);
+  }
+
+  .drawer-notes p { margin-bottom: 0.5rem; }
+  .drawer-notes ul { padding-left: 1.25rem; margin-bottom: 0.5rem; }
+  .drawer-notes li { margin-bottom: 0.25rem; }
+
+  .drawer-owner-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .drawer-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--inspari-teal);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .drawer-owner-name {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--dark-navy);
+  }
+
+  .drawer-teams-btn {
+    margin-left: auto;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-medium);
+    background: var(--white);
+    font-size: 0.78rem;
+    cursor: pointer;
+    color: var(--dark-gray);
+  }
+
+  .drawer-teams-btn:hover { background: var(--light-gray); }
+
+  .drawer-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-soft);
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .btn-primary {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    border: none;
+    background: var(--inspari-teal);
+    color: var(--white);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover { background: var(--cyan-dark-25); }
+
+  .btn-secondary {
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-medium);
+    background: var(--white);
+    color: var(--dark-gray);
+    font-size: 0.88rem;
+    cursor: pointer;
+  }
+
+  .btn-secondary:hover { background: var(--light-gray); }
+</style>
+</head>
+<body>
+
+<h1>Demo Launchpad — Visual Companion</h1>
+<p class="subtitle">Brainstorming mockups using Inspari brand colors</p>
+
+<!-- Color Palette Reference -->
+<div class="section">
+  <h2>Inspari Palette</h2>
+  <div class="palette">
+    <div class="swatch"><div class="swatch-color" style="background:#00A4BD"></div><div class="swatch-label">Teal</div><div class="swatch-hex">#00A4BD</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#00AFC3"></div><div class="swatch-label">Cyan</div><div class="swatch-hex">#00AFC3</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#003C43"></div><div class="swatch-label">Dark Navy</div><div class="swatch-hex">#003C43</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#334B5B"></div><div class="swatch-label">Slate Blue</div><div class="swatch-hex">#334B5B</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#C4A68C"></div><div class="swatch-label">Warm Tan</div><div class="swatch-hex">#C4A68C</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#786455"></div><div class="swatch-label">Deep Brown</div><div class="swatch-hex">#786455</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#ECECEC"></div><div class="swatch-label">Light Gray</div><div class="swatch-hex">#ECECEC</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#454545"></div><div class="swatch-label">Dark Gray</div><div class="swatch-hex">#454545</div></div>
+  </div>
+</div>
+
+<!-- Mockup: Demo Cockpit Layout -->
+<div class="section">
+  <h2>Mockup — Demo Launchpad</h2>
+  <div id="mockup-area">
+    <div class="topbar">
+      <div class="topbar-brand">
+        <span class="dot"></span>
+        Demo Launchpad
+      </div>
+      <div class="topbar-right">
+        <input class="topbar-search" placeholder="Search demos..." disabled>
+        <div class="topbar-avatar">JV</div>
+      </div>
+    </div>
+
+    <!-- Controls row: filters + sort -->
+    <div class="controls-row">
+      <div class="filters">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">Fabric</button>
+        <button class="filter-btn">Power BI</button>
+        <button class="filter-btn">Website</button>
+        <button class="filter-btn filter-btn-mine">Private</button>
+      </div>
+      <div class="sort-controls">
+        <select class="sort-select" disabled>
+          <option>A → Z</option>
+          <option>Most clicked</option>
+          <option>Last used</option>
+        </select>
+        <button class="sort-dir-btn" title="Toggle direction">↓</button>
+      </div>
+    </div>
+
+    <!-- Pinned section -->
+    <div class="pinned-section">
+      <div class="section-label">📌 Pinned</div>
+      <div class="demo-grid">
+        <div class="demo-card pinned">
+          <div class="card-body">
+            <div class="icon" style="background: var(--cyan-light-80); color: var(--cyan-dark-50);"><i data-lucide="zap"></i></div>
+            <div class="content">
+              <div class="title">Real-Time Dashboard</div>
+              <div class="description">Live streaming analytics with EventStream and Power BI DirectLake</div>
+              <div class="card-footer">
+                <span class="tag tag-fabric">Fabric</span>
+                <span class="owner-name">Jon V.</span>
+                <div class="card-actions">
+                  <button class="action-btn" title="Copy URL">📋</button>
+                  <button class="action-btn" title="Chat with Jon V.">💬</button>
+                  <button class="action-btn" title="Notes &amp; Instructions">ⓘ</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-card pinned">
+          <div class="card-body">
+            <div class="icon" style="background: var(--tan-warm-80); color: var(--deep-brown);"><i data-lucide="message-square"></i></div>
+            <div class="content">
+              <div class="title">Conversational BI</div>
+              <div class="description">Natural language queries over a semantic model with AI-powered insights</div>
+              <div class="card-footer">
+                <span class="tag tag-powerbi">Power BI</span>
+                <span class="owner-name">Jon V.</span>
+                <div class="card-actions">
+                  <button class="action-btn" title="Copy URL">📋</button>
+                  <button class="action-btn" title="Chat with Jon V.">💬</button>
+                  <button class="action-btn" title="Notes &amp; Instructions">ⓘ</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- All demos section -->
+    <div class="all-section">
+      <div class="section-label">All demos</div>
+      <div class="demo-grid">
+
+        <div class="demo-card">
+          <div class="card-body">
+            <div class="icon" style="background: #E8F5E9; color: #2E7D32;"><i data-lucide="layers"></i></div>
+            <div class="content">
+              <div class="title-row">
+                <div class="title">Lakehouse Accelerator</div>
+                <span class="new-badge">New</span>
+              </div>
+              <div class="description">End-to-end medallion architecture with automated ingestion pipelines</div>
+              <div class="card-footer">
+                <span class="tag tag-fabric">Fabric</span>
+                <span class="owner-name">Maria S.</span>
+                <div class="card-actions">
+                  <button class="action-btn" title="Pin">📌</button>
+                  <button class="action-btn" title="Copy URL">📋</button>
+                  <button class="action-btn" title="Chat with Maria S.">💬</button>
+                  <button class="action-btn" title="Notes &amp; Instructions">ⓘ</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="card-body">
+            <div class="icon" style="background: #FFF3CD; color: #856404;"><i data-lucide="bar-chart-2"></i></div>
+            <div class="content">
+              <div class="title">Sales Analytics</div>
+              <div class="description">Interactive report with DAX measures, bookmarks, and drillthrough</div>
+              <div class="card-footer">
+                <span class="tag tag-powerbi">Power BI</span>
+                <span class="owner-name">Jon V.</span>
+                <div class="card-actions">
+                  <button class="action-btn" title="Pin">📌</button>
+                  <button class="action-btn" title="Copy URL">📋</button>
+                  <button class="action-btn" title="Chat with Jon V.">💬</button>
+                  <button class="action-btn" title="Notes &amp; Instructions">ⓘ</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="card-body">
+            <div class="icon" style="background: var(--cyan-light-80); color: var(--cyan-dark-50);"><i data-lucide="globe"></i></div>
+            <div class="content">
+              <div class="title-row">
+                <div class="title">Customer Portal</div>
+                <span class="private-badge" title="Only visible to you">🔒 Private</span>
+              </div>
+              <div class="description">Embedded analytics in a standalone web app with RLS</div>
+              <div class="card-footer">
+                <span class="tag tag-website">Website</span>
+                <span class="owner-name">Anders K.</span>
+                <div class="card-actions">
+                  <button class="action-btn" title="Pin">📌</button>
+                  <button class="action-btn" title="Copy URL">📋</button>
+                  <button class="action-btn" title="Chat with Anders K.">💬</button>
+                  <button class="action-btn" title="Notes &amp; Instructions">ⓘ</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="card-body">
+            <div class="icon" style="background: var(--tan-warm-80); color: var(--deep-brown);"><i data-lucide="brain"></i></div>
+            <div class="content">
+              <div class="title">AI Platform Demo</div>
+              <div class="description">RAG pipeline with Azure OpenAI, search, and Fabric integration</div>
+              <div class="card-footer">
+                <span class="tag tag-fabric">Fabric</span>
+                <span class="owner-name">Jon V.</span>
+                <div class="card-actions">
+                  <button class="action-btn" title="Pin">📌</button>
+                  <button class="action-btn" title="Copy URL">📋</button>
+                  <button class="action-btn" title="Chat with Jon V.">💬</button>
+                  <button class="action-btn" title="Notes &amp; Instructions">ⓘ</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Add demo FAB -->
+    <button class="fab" title="Add demo">+</button>
+
+    <!-- Detail Drawer (shown on info click) -->
+    <div class="drawer-overlay"></div>
+    <div class="drawer">
+      <div class="drawer-header">
+        <div class="drawer-icon" style="background: var(--cyan-light-80); color: var(--cyan-dark-50);"><i data-lucide="zap"></i></div>
+        <div>
+          <div class="drawer-title">Real-Time Dashboard</div>
+          <div class="drawer-meta"><span class="tag tag-fabric" style="margin-top:0;">Fabric</span></div>
+        </div>
+        <button class="drawer-close">✕</button>
+      </div>
+
+      <div class="drawer-body">
+        <div>
+          <div class="drawer-section-label">Description</div>
+          <div class="drawer-description">Live streaming analytics with EventStream and Power BI DirectLake. Demonstrates sub-second latency from event source to dashboard.</div>
+        </div>
+
+        <div>
+          <div class="drawer-section-label">Notes &amp; Instructions</div>
+          <div class="drawer-notes">
+            <p><strong>Access:</strong> Requires Fabric capacity access. Contact Jon to be added to the workspace.</p>
+            <ul>
+              <li>Use the <em>Contoso Events</em> dataset — already streaming</li>
+              <li>Switch to the <em>Operations</em> tab for the live view</li>
+              <li>Refresh interval is set to 1s — don't change during a demo</li>
+            </ul>
+            <p>Best shown on a large screen. The EventStream diagram impresses on first view — lead with that before the dashboard.</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="drawer-section-label">Owner</div>
+          <div class="drawer-owner-row">
+            <div class="drawer-avatar">JV</div>
+            <span class="drawer-owner-name">Jon Vöge</span>
+            <button class="drawer-teams-btn">💬 Chat in Teams</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button class="btn-primary">↗ Open Demo</button>
+        <button class="btn-secondary">📋 Copy URL</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+<script>lucide.createIcons();</script>
+</html>
