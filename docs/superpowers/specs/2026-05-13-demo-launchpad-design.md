@@ -67,10 +67,15 @@ The app is designed to be opened during presentations and kept running as a pers
 - **Azure Static Web Apps (Free tier)** — CDN-backed static hosting with built-in Entra authentication and managed Azure Functions. No servers to manage.
 - **Target URL:** `democockpit.azurestaticapps.net` (name chosen at resource creation)
 - **Custom domain:** Out of scope for v1. Can be added later at no cost.
-- **Entra auth:** Restricted to Inspari tenant via `staticwebapp.config.json`. All `/api/*` routes require login — enforced at the SWA layer, not in function code.
+- **Entra auth:** Restricted to Inspari tenant by registering a **custom Entra ID provider** pointing to `https://login.microsoftonline.com/a7ed0222-1883-488c-8bbb-6ee4f043da6d/v2.0`. The default pre-configured Entra provider allows any Microsoft account — a custom provider is required to restrict to the Inspari tenant. All `/api/*` routes require login — enforced at the SWA layer via `staticwebapp.config.json`.
 - **Azure Functions in TypeScript** — same language as the frontend, single language across the stack.
 - **Blob Storage** — data lives in two JSON files. Concurrency handled via ETags (`If-Match` on writes). Suitable for this scale (<100 demos, <50 users).
 - **Managed identity** — Functions connect to Blob Storage via managed identity. No connection strings in code or config.
+- **`staticwebapp.config.json`** must include:
+  - `navigationFallback` pointing to `/index.html` (required for React SPA client-side routing — without it, direct URLs and page refreshes return 404)
+  - `globalHeaders` with `content-security-policy` and `X-Content-Type-Options: nosniff`
+  - `platform.apiRuntime: node:20`
+  - Route rule requiring `authenticated` role on `/*` with 401 → `/.auth/login/aad` redirect
 
 ---
 
@@ -172,15 +177,15 @@ App
 
 Each card displays:
 - **Icon** — Lucide icon in a colored rounded square
-- **Title** — with inline "New" badge (demos created in last 7 days) and/or "🔒 Private" badge
+- **Title** — with inline "New" badge (demos created in last 7 days) and/or "Private" badge (Lucide `Lock` icon, not emoji)
 - **Description** — short text
-- **Footer:** Category tag · Owner name · (hover) action buttons
+- **Footer:** Category tag · Owner name · (hover) action buttons using Lucide icons (`Pin`, `Copy`, `MessageSquare`, `Info`) — not emoji
 
 **Hover actions (appear on hover, bottom-right of card):**
-- 📌 Pin / Unpin
-- 📋 Copy URL to clipboard
-- 💬 Chat with {owner name} — Teams deep link: `https://teams.microsoft.com/l/chat/0/0?users={owner.email}`
-- ⓘ Open detail drawer
+- Pin / Unpin (Lucide `Pin`)
+- Copy URL to clipboard (Lucide `Copy`)
+- Chat with {owner name} — Teams deep link: `https://teams.microsoft.com/l/chat/0/0?users={owner.email}` (Lucide `MessageSquare`)
+- Open detail drawer (Lucide `Info`)
 
 **Card click:** Opens the demo URL in a new tab. Also fires `POST /api/demos/{id}/click`.
 
