@@ -47,11 +47,10 @@ export function DemoCard({ demo, isPinned, currentUser, onEdit, onPin, onCopy, o
             )}
           </div>
           <div className="space-y-2">
-            <h3 className="text-[1rem] font-semibold leading-tight text-[#003C43]">{demo.title}</h3>
-            <p className="min-h-[2.7rem] text-[0.83rem] leading-snug text-[#4f5c5f]">{demo.description || 'No description yet.'}</p>
-            <div className="flex items-center justify-between gap-3 pt-1 text-[0.72rem] text-[#6a7678]">
+            <h3 className="line-clamp-2 text-[1rem] font-semibold leading-tight text-[#003C43]" title={demo.title}>{demo.title}</h3>
+            <p className="line-clamp-3 text-[0.83rem] leading-snug text-[#4f5c5f]" title={demo.description || undefined}>{demo.description || 'No description yet.'}</p>
+            <div className="flex items-center gap-3 pt-1 text-[0.72rem] text-[#6a7678]">
               <span className="truncate">{ownerLabel}</span>
-              {canEdit && <span className="font-medium text-[#007f92]">Editable</span>}
             </div>
           </div>
         </div>
