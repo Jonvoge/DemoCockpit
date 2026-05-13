@@ -1,6 +1,7 @@
 import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
 import { readBlob, writeBlob } from '../blobClient.js'
 import { getUser } from '../auth.js'
+import { defaultPreferences } from './getPreferences.js'
 import type { UserPreferences } from '../types.js'
 
 app.http('updatePreferences', {
@@ -15,7 +16,7 @@ app.http('updatePreferences', {
     const key = `prefs/${user.userId}.json`
     const result = await readBlob<UserPreferences>(key)
     const prefs: UserPreferences = {
-      ...(result?.data ?? { userId: user.userId, pinnedDemoIds: [], sortField: 'alphabetical', sortDirection: 'asc', lastClicked: {} }),
+      ...(result?.data ?? defaultPreferences(user.userId)),
       ...updates,
       userId: user.userId,
     }

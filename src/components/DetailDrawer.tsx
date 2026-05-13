@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { X, ExternalLink, Copy, MessageSquare } from 'lucide-react'
-import * as LucideIcons from 'lucide-react'
+import { getLucideIcon } from '../utils/iconUtils'
 import { marked } from 'marked'
 import type { Demo } from '../types'
 
@@ -9,14 +9,6 @@ interface Props {
   onClose: () => void
   onOpen: (demo: Demo) => void
   onCopy: (url: string) => void
-}
-
-function getLucideIcon(iconSlug: string): React.ComponentType<{ size?: number; strokeWidth?: number }> {
-  const pascalCase = iconSlug
-    .split('-')
-    .map(s => s.charAt(0).toUpperCase() + s.slice(1))
-    .join('')
-  return (LucideIcons as unknown as Record<string, React.ComponentType<{ size?: number; strokeWidth?: number }>>)[pascalCase] ?? LucideIcons.Zap
 }
 
 export function DetailDrawer({ demo, onClose, onOpen, onCopy }: Props) {

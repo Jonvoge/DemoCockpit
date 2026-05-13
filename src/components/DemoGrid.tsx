@@ -38,7 +38,6 @@ export function DemoGrid({ pinnedDemos, otherDemos, currentUser, onEdit, onPin, 
         {otherDemos.length === 0 && pinnedDemos.length === 0 && (
           <p className="px-4 text-[0.85rem] text-[#a0a09a]">No demos match your filters.</p>
         )}
-        {otherDemos.length === 0 && pinnedDemos.length > 0 && null}
       </div>
     </div>
   )

@@ -4,10 +4,6 @@ import { getUser } from '../auth.js'
 import { canModify } from './updateDemo.js'
 import type { Demo } from '../types.js'
 
-export function removeDemoById(demos: Demo[], id: string): Demo[] {
-  return demos.filter(d => d.id !== id)
-}
-
 app.http('deleteDemo', {
   methods: ['DELETE'],
   route: 'demos/{id}',
@@ -23,7 +19,7 @@ app.http('deleteDemo', {
     if (!demo) return { status: 404, body: 'Not found' }
     if (!canModify(demo, user)) return { status: 403, body: 'Forbidden' }
 
-    await writeBlob('demos/demos.json', removeDemoById(demos, id), result?.etag)
+    await writeBlob('demos/demos.json', demos.filter(d => d.id !== id), result?.etag)
     return { status: 204 }
   }
 })

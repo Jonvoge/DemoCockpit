@@ -1,5 +1,5 @@
 import { Pin, Copy, MessageSquare, Info, Lock, ArrowUpRight, Pencil } from 'lucide-react'
-import * as LucideIcons from 'lucide-react'
+import { getLucideIcon } from '../utils/iconUtils'
 import type { Demo, AuthUser } from '../types'
 import { isNewDemo } from '../utils/demoUtils'
 
@@ -12,14 +12,6 @@ interface Props {
   onCopy: (url: string) => void
   onInfo: (demo: Demo) => void
   onClick: (demo: Demo) => void
-}
-
-function getLucideIcon(iconSlug: string): React.ComponentType<{ size?: number; strokeWidth?: number }> {
-  const pascalCase = iconSlug
-    .split('-')
-    .map(s => s.charAt(0).toUpperCase() + s.slice(1))
-    .join('')
-  return (LucideIcons as unknown as Record<string, React.ComponentType<{ size?: number; strokeWidth?: number }>>)[pascalCase] ?? LucideIcons.Zap
 }
 
 export function DemoCard({ demo, isPinned, currentUser, onEdit, onPin, onCopy, onInfo, onClick }: Props) {

@@ -6,8 +6,7 @@ import { TopBar } from './components/TopBar'
 import { FilterBar } from './components/FilterBar'
 import { DemoGrid } from './components/DemoGrid'
 import { DetailDrawer } from './components/DetailDrawer'
-import { AddDemoModal } from './components/AddDemoModal'
-import { EditDemoModal } from './components/EditDemoModal'
+import { DemoModal } from './components/DemoModal'
 import { sortDemos } from './utils/demoUtils'
 import type { Demo, UserPreferences, SortField, SortDirection } from './types'
 
@@ -171,9 +170,10 @@ export default function App() {
         onCopy={handleCopy}
       />
 
-      {showAdd && <AddDemoModal onSubmit={handleAddDemo} onClose={() => setShowAdd(false)} />}
+      {showAdd && <DemoModal mode="add" onSubmit={handleAddDemo} onClose={() => setShowAdd(false)} />}
       {editDemo && (
-        <EditDemoModal
+        <DemoModal
+          mode="edit"
           demo={editDemo}
           onSubmit={handleEditDemo}
           onDelete={handleDeleteDemo}

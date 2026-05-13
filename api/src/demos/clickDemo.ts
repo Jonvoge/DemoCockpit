@@ -1,11 +1,8 @@
 import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
 import { readBlob, writeBlob } from '../blobClient.js'
 import { getUser } from '../auth.js'
+import { defaultPreferences } from '../preferences/getPreferences.js'
 import type { Demo, UserPreferences } from '../types.js'
-
-export function incrementClick(demo: Demo): Demo {
-  return { ...demo, clickCount: demo.clickCount + 1 }
-}
 
 app.http('clickDemo', {
   methods: ['POST'],
@@ -21,14 +18,12 @@ app.http('clickDemo', {
     const demos = demosResult?.data ?? []
     const idx = demos.findIndex(d => d.id === id)
     if (idx === -1) return { status: 404, body: 'Not found' }
-    demos[idx] = incrementClick(demos[idx])
+    demos[idx] = { ...demos[idx], clickCount: demos[idx].clickCount + 1 }
     await writeBlob('demos/demos.json', demos, demosResult?.etag)
 
     const prefKey = `prefs/${user.userId}.json`
     const prefResult = await readBlob<UserPreferences>(prefKey)
-    const prefs: UserPreferences = prefResult?.data ?? {
-      userId: user.userId, pinnedDemoIds: [], sortField: 'alphabetical', sortDirection: 'asc', lastClicked: {}
-    }
+    const prefs: UserPreferences = prefResult?.data ?? defaultPreferences(user.userId)
     prefs.lastClicked[id] = new Date().toISOString()
     await writeBlob(prefKey, prefs, prefResult?.etag)
 
