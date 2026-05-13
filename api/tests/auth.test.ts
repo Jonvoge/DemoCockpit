@@ -24,6 +24,18 @@ describe('getUser', () => {
   it('returns null when header is malformed base64', () => {
     expect(getUser('!!!not-base64!!!')).toBeNull()
   })
+
+  it('defaults claims to an empty array when omitted from the header payload', () => {
+    const payload = {
+      userId: 'abc123',
+      userDetails: 'Jon Voge',
+      userRoles: ['authenticated']
+    }
+    const encoded = Buffer.from(JSON.stringify(payload)).toString('base64')
+    const user = getUser(encoded)
+    expect(user).not.toBeNull()
+    expect(user!.claims).toEqual([])
+  })
 })
 
 describe('getUserEmail', () => {
@@ -39,6 +51,13 @@ describe('getUserEmail', () => {
     const user = {
       userId: 'u1', userDetails: 'Jon Vöge', userRoles: ['authenticated'],
       claims: []
+    }
+    expect(getUserEmail(user)).toBe('Jon Vöge')
+  })
+
+  it('falls back to userDetails when claims are missing', () => {
+    const user = {
+      userId: 'u1', userDetails: 'Jon Vöge', userRoles: ['authenticated']
     }
     expect(getUserEmail(user)).toBe('Jon Vöge')
   })

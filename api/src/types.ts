@@ -31,7 +31,7 @@ export interface AuthUser {
   userId: string;
   userDetails: string;
   userRoles: string[];
-  claims: Array<{ typ: string; val: string }>;
+  claims?: Array<{ typ: string; val: string }>;
 }
 
 export type SortField = UserPreferences['sortField'];
