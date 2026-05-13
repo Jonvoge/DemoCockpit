@@ -1,7 +1,7 @@
 import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
 import { readBlob, writeBlob } from '../blobClient.js'
 import { getUser } from '../auth.js'
-import type { UserPreferences } from '../../../src/types.js'
+import type { UserPreferences } from '../types.js'
 
 app.http('updatePreferences', {
   methods: ['PUT'],

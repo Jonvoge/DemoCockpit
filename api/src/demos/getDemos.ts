@@ -1,7 +1,7 @@
 import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
 import { readBlob } from '../blobClient.js'
 import { getUser } from '../auth.js'
-import type { Demo } from '../../../src/types.js'
+import type { Demo } from '../types.js'
 
 export function filterDemosForUser(demos: Demo[], userId: string): Demo[] {
   return demos.filter(d => d.visibility === 'public' || d.owner.id === userId)

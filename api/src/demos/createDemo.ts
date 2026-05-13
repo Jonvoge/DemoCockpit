@@ -2,7 +2,7 @@ import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } 
 import { randomUUID } from 'crypto'
 import { readBlob, writeBlob } from '../blobClient.js'
 import { getUser, getUserEmail } from '../auth.js'
-import type { Demo, AuthUser } from '../../../src/types.js'
+import type { Demo, AuthUser } from '../types.js'
 
 type DemoInput = Pick<Demo, 'title' | 'description' | 'url' | 'category' | 'icon' | 'visibility' | 'notes'>
 

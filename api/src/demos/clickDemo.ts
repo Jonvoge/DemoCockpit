@@ -1,7 +1,7 @@
 import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
 import { readBlob, writeBlob } from '../blobClient.js'
 import { getUser } from '../auth.js'
-import type { Demo, UserPreferences } from '../../../src/types.js'
+import type { Demo, UserPreferences } from '../types.js'
 
 export function incrementClick(demo: Demo): Demo {
   return { ...demo, clickCount: demo.clickCount + 1 }

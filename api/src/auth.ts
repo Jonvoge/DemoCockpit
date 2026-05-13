@@ -1,4 +1,4 @@
-import type { AuthUser } from '../../src/types.js'
+import type { AuthUser } from './types.js'
 
 export function getUser(header: string | undefined): AuthUser | null {
   if (!header) return null

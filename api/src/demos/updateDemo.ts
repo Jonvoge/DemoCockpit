@@ -1,7 +1,7 @@
 import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
 import { readBlob, writeBlob } from '../blobClient.js'
 import { getUser } from '../auth.js'
-import type { Demo, AuthUser } from '../../../src/types.js'
+import type { Demo, AuthUser } from '../types.js'
 
 export function canModify(demo: Demo, user: AuthUser): boolean {
   return demo.owner.id === user.userId || user.userRoles.includes('admin')

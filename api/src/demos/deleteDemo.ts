@@ -2,7 +2,7 @@ import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } 
 import { readBlob, writeBlob } from '../blobClient.js'
 import { getUser } from '../auth.js'
 import { canModify } from './updateDemo.js'
-import type { Demo } from '../../../src/types.js'
+import type { Demo } from '../types.js'
 
 export function removeDemoById(demos: Demo[], id: string): Demo[] {
   return demos.filter(d => d.id !== id)
