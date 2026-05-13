@@ -6,13 +6,13 @@ const mockDemos: Demo[] = [
     id: '1', title: 'Public Demo', description: 'desc', url: 'https://a.com',
     category: 'Fabric', icon: 'zap', visibility: 'public',
     owner: { id: 'user1', name: 'Alice', email: 'alice@inspari.dk' },
-    clickCount: 5, notes: '', createdAt: '2026-05-01T00:00:00Z', updatedAt: '2026-05-01T00:00:00Z'
+    clickCount: 5, notes: '', unavailable: false, createdAt: '2026-05-01T00:00:00Z', updatedAt: '2026-05-01T00:00:00Z'
   },
   {
     id: '2', title: 'Private Demo', description: 'desc', url: 'https://b.com',
     category: 'Power BI', icon: 'bar-chart-2', visibility: 'private',
     owner: { id: 'user2', name: 'Bob', email: 'bob@inspari.dk' },
-    clickCount: 2, notes: '', createdAt: '2026-05-01T00:00:00Z', updatedAt: '2026-05-01T00:00:00Z'
+    clickCount: 2, notes: '', unavailable: false, createdAt: '2026-05-01T00:00:00Z', updatedAt: '2026-05-01T00:00:00Z'
   },
 ]
 

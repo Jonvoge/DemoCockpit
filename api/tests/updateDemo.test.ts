@@ -6,7 +6,7 @@ const demo: Demo = {
   id: '1', title: 'T', description: 'd', url: 'https://x.com',
   category: 'Fabric', icon: 'zap', visibility: 'public',
   owner: { id: 'owner1', name: 'Alice', email: 'alice@inspari.dk' },
-  clickCount: 0, notes: '', createdAt: '', updatedAt: ''
+  clickCount: 0, notes: '', unavailable: false, createdAt: '', updatedAt: ''
 }
 
 describe('canModify', () => {

@@ -17,6 +17,7 @@ export function buildDemo(input: DemoInput, user: AuthUser, email: string): Demo
   return {
     id: randomUUID(),
     ...input,
+    unavailable: false,
     owner: { id: user.userId, name: user.userDetails, email },
     clickCount: 0,
     createdAt: now,
